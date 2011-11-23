@@ -133,7 +133,7 @@ public class Logic {
 				}
 				String password = new String(passField.getPassword());
 				data = new String(PMCipher.decrypt(data, password,
-						Setting.CIPHER_SCHEME));
+						Setting.CIPHER_SCHEME), "utf-8");
 				this.password = password;
 			}
 			// xmlのxsd versionに下位互換性を持たせる．
@@ -157,35 +157,37 @@ public class Logic {
 		return res;
 	}
 
-	public void merge(String data) throws Exception {
-			Db db = this.createXMLObjectForMerge(data).getValue();
-			// まずはserivceに対するマージ
-			this.mergeService(this.db.getData().getService(), db.getData()
-					.getService());
-			// 次に各ディレクトリについて
-			// そもそもディレクトリが存在しなければそれを追加
-			// 存在すればディレクトリ内を確認
-			this.mergeDirectory(this.db.getData().getDirectory(), db.getData()
-					.getDirectory());
-			this.mainFrame.setServiceList(this.db.getData());
-			this.selectService(new Service());
+	public void merge(String data) {
+		Db db = this.createXMLObjectForMerge(data).getValue();
+		// まずはserivceに対するマージ
+		this.mergeService(this.db.getData().getService(), db.getData()
+				.getService());
+		// 次に各ディレクトリについて
+		// そもそもディレクトリが存在しなければそれを追加
+		// 存在すればディレクトリ内を確認
+		this.mergeDirectory(this.db.getData().getDirectory(), db.getData()
+				.getDirectory());
+		this.mainFrame.setServiceList(this.db.getData());
+		this.selectService(new Service());
 	}
 
 	private void mergeService(List<Service> toList, List<Service> fromList) {
 		if (toList != null && fromList != null) {
 			List<Service> serviceList = new ArrayList<Service>(fromList);
 			for (Service s : toList) {
+				System.out.println("service: " + s.getName());
 				serviceList.remove(s);
 			}
+			System.out.println(serviceList.size());
 			toList.addAll(serviceList);
 		}
 	}
 
 	private void mergeDirectory(List<Directory> toList, List<Directory> fromList) {
 		if (toList != null && fromList != null) {
-			// ディレクトリ操作による影響を受けないように現状のListを生成
 			List<Directory> directoryList = new ArrayList<Directory>(toList);
 			for (Directory d : fromList) {
+				System.out.println(d.getName());
 				if (directoryList.contains(d)) {// ディレクトリ内走査
 					Directory dir = toList.get(toList.indexOf(d));
 					// service
@@ -245,7 +247,7 @@ public class Logic {
 				}
 				String password = new String(passField.getPassword());
 				data = new String(PMCipher.decrypt(data, password,
-						Setting.CIPHER_SCHEME));
+						Setting.CIPHER_SCHEME), "utf-8");
 				this.password = password;
 			}
 			// xmlのxsd versionに下位互換性を持たせる．
@@ -462,7 +464,7 @@ public class Logic {
 			this.db = db;
 			this.mainFrame.setServiceList(this.db.getData());
 			this.selectService(new Service());
-			this.fileName = file.getName();
+			this.fileName = file.getAbsolutePath();
 
 			// dbから設定を読み込む(あれば)
 			this.readConfig();
@@ -478,7 +480,7 @@ public class Logic {
 					file.getAbsoluteFile() + "のオープンに失敗しました.\n"
 							+ "ファイルを新規作成します.", "エラー",
 					JOptionPane.WARNING_MESSAGE);
-			this.fileName = "password.xml";
+			this.fileName = Setting.DEFAULT_PASSWORD_FILE_NAME;
 		}
 		// 登録されている全マークを取得
 		if (this.db.getMarkDefs() != null) {
@@ -563,7 +565,7 @@ public class Logic {
 			bw.close();
 			osw.close();
 			fos.close();
-			this.fileName = file.getName();
+			this.fileName = file.getAbsolutePath();
 			if (Setting.USE_CIPHER) {
 				this.mainFrame.getOverwriteItem().setEnabled(true);
 				this.mainFrame.getOverwriteWithNewPassItem().setEnabled(true);
@@ -651,7 +653,7 @@ public class Logic {
 			bw.close();
 			osw.close();
 			fos.close();
-			this.fileName = file.getName();
+			this.fileName = file.getAbsolutePath();
 			if (Setting.USE_CIPHER) {
 				this.mainFrame.getOverwriteItem().setEnabled(true);
 				this.mainFrame.getOverwriteWithNewPassItem().setEnabled(true);
@@ -1748,7 +1750,9 @@ public class Logic {
 			String path = file.getAbsolutePath();
 			String separator = System.getProperty("file.separator");
 			// password.xmlを出力
-			File xmlFile = new File(path + separator + this.fileName);
+
+			File xmlFile = new File(path + separator
+					+ new File(this.fileName).getName());
 			this.saveFile(xmlFile, false);
 			// reg-fileを出力
 			String regPath = path + separator + "REG-FILE";

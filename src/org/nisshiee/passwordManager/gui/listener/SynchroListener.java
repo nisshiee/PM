@@ -42,7 +42,7 @@ public class SynchroListener implements ActionListener {
 
 	public static final String CREATE = "create connection Key";
 
-	private static final String KeyDirName = "./key/";
+	private static final String KeyDirName = "key";
 	private static final String PrivateFileName = "id_rsa";
 
 	private static final String PackageDIR = "PM";
@@ -65,7 +65,8 @@ public class SynchroListener implements ActionListener {
 		this.put = put;
 		this.merge = merge;
 		this.create = create;
-		if (new File(KeyDirName + PrivateFileName).exists()) {
+		if (new File(PackageDIR + "/" + KeyDirName + "/" + PrivateFileName)
+				.exists()) {
 			this.get.setEnabled(true);
 			this.put.setEnabled(true);
 			this.merge.setEnabled(true);
@@ -76,6 +77,10 @@ public class SynchroListener implements ActionListener {
 			this.merge.setEnabled(false);
 			this.create.setEnabled(true);
 		}
+		this.get.setEnabled(false);
+		this.put.setEnabled(false);
+		// this.merge.setEnabled(false);
+		// this.create.setEnabled(false);
 	}
 
 	@Override
@@ -120,6 +125,7 @@ public class SynchroListener implements ActionListener {
 	}
 
 	private void executeAction(int select) {
+		String separator = System.getProperty("file.separator");
 		String colon = ":";
 		String hMessage = "host";
 		JTextField hostField = new JTextField(20);
@@ -154,7 +160,8 @@ public class SynchroListener implements ActionListener {
 		String user = userField.getText();
 		JSch jsch = null;
 		try {
-			jsch = this.getJSch(KeyDirName + PrivateFileName);
+			jsch = this.getJSch(PackageDIR + separator + KeyDirName + separator
+					+ PrivateFileName);
 		} catch (JSchException e1) {
 			JOptionPane.showMessageDialog(this.mainFrame, "鍵の設定に失敗しました．");
 			return;
@@ -225,7 +232,7 @@ public class SynchroListener implements ActionListener {
 		InputStream is = sftp.get("password.xml");
 		String str = "";
 		try {
-			InputStreamReader isr = new InputStreamReader(is);
+			InputStreamReader isr = new InputStreamReader(is, "utf-8");
 			BufferedReader br = new BufferedReader(isr);
 			String line = null;
 			while ((line = br.readLine()) != null) {
@@ -248,7 +255,7 @@ public class SynchroListener implements ActionListener {
 				JOptionPane.showMessageDialog(this.mainFrame, "マージが完了しました．");
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this.mainFrame,
-						"マージ用ファイルの読み込みに失敗しました");
+						"マージ用ファイルのコンバートに失敗しました");
 				return;
 			}
 		}

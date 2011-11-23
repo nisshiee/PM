@@ -10,7 +10,7 @@ import org.nisshiee.passwordManager.gui.MainFrame;
 
 public class VersionListener implements ActionListener {
 	private MainFrame mainFrame;
-	private String version = "5.0.2";
+	private String version = "6.0.-beta2";
 
 	public static final String VERSION_INFORMANTION = "version_infomation";
 

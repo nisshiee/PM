@@ -9,9 +9,13 @@ public class Setting {
 	public final static String XML_CONTEXT_PATH = "org.nisshiee.passwordManager.xml";
 
 	public final static boolean USE_CIPHER = true;
-	public final static String CIPHER_SCHEME = "RC2";
+	public final static String CIPHER_SCHEME = "AES";
 
-	public final static String DIRNAME_OF_SAVING_PMFILE = "./REG-FILE/";
+	public final static String ROOT_DIR_NAME = "./PM";
+	public final static String DIRNAME_OF_SAVING_PMFILE = ROOT_DIR_NAME
+			+ "/REG-FILE/";
+	public final static String DEFAULT_PASSWORD_FILE_NAME = ROOT_DIR_NAME
+			+ "/password.xml";
 
 	/**
 	 * 登録ファイルの暗号化時の拡張子

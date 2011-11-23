@@ -33,7 +33,7 @@ public class FileMenuListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(OPEN_DEFAULT_FILE)) {
-			this.logic.openFile(new File("password.xml"));
+			this.logic.openFile(new File(Setting.DEFAULT_PASSWORD_FILE_NAME));
 			this.mainFrame.reload();
 		} else if (e.getActionCommand().equals(OPEN_SELECTED_FILE)) {
 			JFileChooser chooser = new JFileChooser(new File("./"));
@@ -80,9 +80,9 @@ public class FileMenuListener implements ActionListener {
 		if (file.exists()) {
 			this.logic.openFile(file);
 		} else {
-			JOptionPane.showMessageDialog(this.mainFrame, file
-					.getAbsoluteFile()
-					+ "は存在しません.", "エラー", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(this.mainFrame,
+					file.getAbsoluteFile() + "は存在しません.", "エラー",
+					JOptionPane.WARNING_MESSAGE);
 		}
 	}
 }

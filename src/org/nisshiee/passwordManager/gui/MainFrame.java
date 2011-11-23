@@ -114,7 +114,7 @@ public class MainFrame extends JFrame {
 		}
 		this.setIconImages(iList);
 
-		this.logic.openFile(new File("password.xml"));
+		this.logic.openFile(new File(Setting.DEFAULT_PASSWORD_FILE_NAME));
 	}
 
 	private void createMenuBar() {
